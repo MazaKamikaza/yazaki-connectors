@@ -375,9 +375,10 @@ async function loadDB() {
     DB = rows.map(row => {
       const c = row.c;
       const val = (i) => c[i] && c[i].v !== null ? String(c[i].v) : '';
+      const fmt = (i) => c[i] && c[i].f ? String(c[i].f) : val(i);
       return {
-        id: val(0) || Date.now(),
-        number: val(1),
+        id: fmt(0) || String(Date.now()),
+        number: fmt(1),
         project: val(2),
         note: val(3),
         connectorImages: val(4) ? val(4).split(',').map(s => s.trim()).filter(Boolean) : [],
