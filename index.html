@@ -357,7 +357,11 @@ let lastListType = null;
 let lastListValue = null;
 
 function safeJSON(str) {
-  try { return JSON.parse(str); } catch(e) { return []; }
+  try { 
+    // Fix double commas (common data entry error)
+    const fixed = str.replace(/,\s*,/g, ',').replace(/\[,/g, '[').replace(/,\]/g, ']');
+    return JSON.parse(fixed); 
+  } catch(e) { return []; }
 }
 
 async function loadDB() {
@@ -524,7 +528,7 @@ function renderProjectGrid(proj, connectors) {
   const grid = document.getElementById('connector-grid');
   grid.innerHTML = connectors.map(c => {
     const img = c.connectorImages && c.connectorImages[0] ? '<img src="'+c.connectorImages[0]+'" alt="'+c.number+'">' : '<svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="#3a3f52"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0 0h18"/></svg>';
-    return '<div class="connector-grid-card" onclick="showConnectorDetail('+c.id+')">' +
+    return '<div class="connector-grid-card" onclick="showConnectorDetail(\''+c.id+'\')">' +
       '<div class="connector-grid-img">'+img+'</div>' +
       '<div class="connector-grid-info"><div class="connector-grid-number">'+String(c.number)+'</div><div class="connector-grid-note">'+c.project+'</div></div></div>';
   }).join('');
@@ -532,7 +536,7 @@ function renderProjectGrid(proj, connectors) {
 }
 
 function showConnectorDetail(id) {
-  const connector = DB.find(c => c.id === id);
+  const connector = DB.find(c => String(c.id) === String(id));
   if (!connector) return;
   document.getElementById('project-results').style.display = 'none';
   document.getElementById('btn-back').style.display = 'inline-block';
@@ -693,7 +697,7 @@ async function saveConnector() {
 
 async function deleteConnector(id) {
   if (!confirm('Obrisati ovaj konektor?')) return;
-  DB = DB.filter(c => c.id !== id);
+  DB = DB.filter(c => String(c.id) !== String(id));
   await saveDB();
   populateProjectDropdown();
   renderConnectorList();
