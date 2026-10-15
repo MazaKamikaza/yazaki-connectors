@@ -386,7 +386,8 @@ async function loadDB() {
         tools: val(6) ? safeJSON(val(6)) : [],
         pdfUrl: val(7),
         pdfName: val(8),
-        technicalDrawing: val(9)
+        technicalDrawing: val(9),
+        technicalDrawing2: val(10)
       };
     }).filter(c => c.number);
     populateProjectDropdown();
@@ -597,7 +598,13 @@ function renderResults(c) {
   if (c.technicalDrawing) {
     const card = document.createElement('div');
     card.className = 'img-card';
-    card.innerHTML = '<div class="img-card-img-wrap" onclick="openLightbox(\''+c.technicalDrawing+'\')"><img src="'+c.technicalDrawing+'" alt="Tehnički crtež"></div><div class="img-card-name" style="color:var(--accent)">Tehnički crtež</div>';
+    card.innerHTML = '<div class="img-card-img-wrap" onclick="openLightbox(\''+c.technicalDrawing+'\')"><img src="'+c.technicalDrawing+'" alt="Tehnički crtež"></div><div class="img-card-name" style="color:var(--accent)">Tehnički crtež 1</div>';
+    imgGrid.appendChild(card);
+  }
+  if (c.technicalDrawing2) {
+    const card = document.createElement('div');
+    card.className = 'img-card';
+    card.innerHTML = '<div class="img-card-img-wrap" onclick="openLightbox(\''+c.technicalDrawing2+'\')"><img src="'+c.technicalDrawing2+'" alt="Tehnički crtež 2"></div><div class="img-card-name" style="color:var(--accent)">Tehnički crtež 2</div>';
     imgGrid.appendChild(card);
   }
 
